@@ -9,26 +9,20 @@ jobs:
   To-Zip-And-Release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
-        uses: actions/checkout@v3
-      
-      - name: Get latest tag
-        id: get_latest_tag
-        run: |
-          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v1.0")
-          echo ::set-output name=tag::${latest_tag// /}  # Replace space with dot
-      
-      - name: Get next version
-        id: get_next_version
-        run: |
-          version=${{ steps.get_latest_tag.outputs.tag }}
-          major=$(echo $version | cut -d '.' -f 1 | sed 's/v//')
-          minor=$(echo $version | cut -d '.' -f 2)
-          next_minor=$((minor + 1))
-          echo ::set-output name=next_version::"v${major}.${next_minor}"
-      
+      - name: Checkout branch
+        uses: actions/checkout@v4
+  
+      - name: Generate release tag
+        id: generate_release_tag
+        uses: amitsingh-007/next-release-tag@v5.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: 'v'
+          tag_template: 'yyyy.mm.dd.i'
+        
+        
       - name: Compress Files
-        run: zip "UBController-${{ steps.get_next_version.outputs.next_version }}.zip" brightness-controller.desktop brt.svg brightness-script.py
+        run: zip "UnityBrightnessController-${{ steps.generate_release_tag.outputs.next_release_tag }}.zip" brightness-controller.desktop brt.svg brightness-script.py
 
       - name: Create Release
         id: create_release
@@ -36,8 +30,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get_next_version.outputs.next_version }}  # Use the next version
-          release_name: "Release ${{ steps.get_next_version.outputs.next_version }}"  # Prepend "Release v" to the release name
+          tag_name: ${{ steps.generate_release_tag.outputs.next_release_tag }}
+          release_name: "Release ${{ steps.generate_release_tag.outputs.next_release_tag }}"
           draft: false
           prerelease: false
 
@@ -48,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "./UBController-${{ steps.get_next_version.outputs.next_version }}.zip"
-          asset_name: "UBController-${{ steps.get_next_version.outputs.next_version }}.zip"
+          asset_path: "./UnityBrightnessController-${{ steps.generate_release_tag.outputs.next_release_tag }}.zip"
+          asset_name: "UnityBrightnessController-${{ steps.generate_release_tag.outputs.next_release_tag }}.zip"
           asset_content_type: application/zip
