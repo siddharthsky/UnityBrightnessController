@@ -32,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "${{ steps.get_next_version.outputs.next_version }}"  # Use the next version directly without prepending "v"
+          tag_name: "v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "v" to the next version and ensure there's a dot between major and minor version numbers
           release_name: "Release v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "Release v" to the release name
           draft: false
           prerelease: false
