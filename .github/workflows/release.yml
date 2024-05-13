@@ -21,7 +21,7 @@ jobs:
       
       - name: Get next version
         id: get_next_version
-        run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{if ($2 == 9) {$1+=1; $2=0} else {$2+=1}; OFS="."; print $0}')
+        run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{if ($2 == 9) {$1+=1; $2=0} else {$2+=1}; OFS="."; print $1,$2}')
       
       - name: Compress Files
         run: zip UBController.zip brightness-controller.desktop brt.svg brightness-script.py
