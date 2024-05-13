@@ -16,7 +16,7 @@ jobs:
       - name: Get latest tag
         id: get_latest_tag
         run: |
-          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v1.0")
+          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v1.1")
           echo ::set-output name=tag::${latest_tag// /}  # Replace space with dot
       
       - name: Get next version
@@ -32,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "v" to the tag name
+          tag_name: ${{ steps.get_next_version.outputs.next_version }}  # Prepend "v" to the tag name
           release_name: "Release v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "Release v" to the release name
           draft: false
           prerelease: false
