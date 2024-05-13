@@ -2,8 +2,11 @@ name: Release
 
 on:
   push:
-    branches:
-      - main  # Main branch changes only
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+    
 
 jobs:
   To-Zip-And-Release:
@@ -12,16 +15,8 @@ jobs:
       - name: Checkout 
         uses: actions/checkout@v3
       
-      - name: Get latest tag
-        id: get_latest_tag
-        run: echo ::set-output name=tag::$(git describe --abbrev=0 --tags)
-      
-      - name: Get next version
-        id: get_next_version
-        run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{$NF+=1; OFS="."; print $0}')
-      
       - name: Compress Files
-        run: zip UBController.zip brt-controller.desktop brt.svg brt-script.py
+        run: zip UBController.zip brightness-controller.desktop brt.svg brightness-script.py
 
       - name: Create Release
         id: create_release
@@ -29,8 +24,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get_next_version.outputs.next_version }}  # Use the next version here
-          release_name: Release ${{ steps.get_next_version.outputs.next_version }}  # Use the next version here
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
 
