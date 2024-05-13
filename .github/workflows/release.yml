@@ -6,13 +6,20 @@ on:
       - main  # Main branch changes only
 
     
-
 jobs:
   To-Zip-And-Release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
         uses: actions/checkout@v3
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo ::set-output name=tag::$(git describe --abbrev=0 --tags)
+      
+      - name: Get next version
+        id: get_next_version
+        run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{if ($2 == 9) {$1+=1; $2=0} else {$2+=1}; OFS="."; print $0}')
       
       - name: Compress Files
         run: zip UBController.zip brightness-controller.desktop brt.svg brightness-script.py
@@ -23,8 +30,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.get_next_version.outputs.next_version }}  # Use the next version here
+          release_name: Release ${{ steps.get_next_version.outputs.next_version }}  # Use the next version here
           draft: false
           prerelease: false
 
