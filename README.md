@@ -68,3 +68,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 
 Feel free to contribute, report issues, or suggest improvements!
+
+## Credits 
+<a href="https://www.flaticon.com/free-icons/sun" title="sun icons">Sun icons created by Freepik - Flaticon</a>
