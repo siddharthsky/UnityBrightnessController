@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  <a href="#Description-">Description</a> •
-  <a href="#Requirements-">Requirements</a> •
-  <a href="#Usage">Usage</a> •
-  <a href="#Reason for Creation">Reason for Creation</a> •
-  <a href="#Notes">Notes</a>
+  <a href="#description">Description</a> •
+  <a href="#requirements">Requirements</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#reason-for-creation">Reason for Creation</a> •
+  <a href="#notes">Notes</a>
 </p>
 
 ## Description
