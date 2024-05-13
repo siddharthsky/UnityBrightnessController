@@ -15,7 +15,9 @@ jobs:
       
       - name: Get latest tag
         id: get_latest_tag
-        run: echo ::set-output name=tag::$(git describe --abbrev=0 --tags)
+        run: |
+          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v1.0")
+          echo ::set-output name=tag::${latest_tag}
       
       - name: Get next version
         id: get_next_version
