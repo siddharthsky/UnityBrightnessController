@@ -24,7 +24,7 @@ jobs:
         run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{if ($2 == 9) {$1+=1; $2=0} else {$2+=1}; OFS="."; print $1,$2}')
       
       - name: Compress Files
-        run: zip UBController.zip brightness-controller.desktop brt.svg brightness-script.py
+        run: zip "UnityBrightnessController-${{ steps.get_next_version.outputs.next_version }}.zip" brightness-controller.desktop brt.svg brightness-script.py
 
       - name: Create Release
         id: create_release
@@ -44,6 +44,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./UBController.zip
-          asset_name: UBController.zip
+          asset_path: "./UnityBrightnessController-${{ steps.get_next_version.outputs.next_version }}.zip"
+          asset_name: "UnityBrightnessController-${{ steps.get_next_version.outputs.next_version }}.zip"
           asset_content_type: application/zip
