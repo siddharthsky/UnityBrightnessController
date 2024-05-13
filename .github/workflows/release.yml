@@ -16,12 +16,26 @@ jobs:
       - name: Get latest tag
         id: get_latest_tag
         run: |
-          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v1.0")
-          echo ::set-output name=tag::${latest_tag}
+          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null)
+          if [[ -z "${latest_tag}" ]]; then
+            latest_tag="v1.0"
+          fi
+          echo ::set-output name=tag::"${latest_tag}"
       
       - name: Get next version
         id: get_next_version
-        run: echo ::set-output name=next_version::$(echo ${{ steps.get_latest_tag.outputs.tag }} | awk -F '.' '{if ($2 == 9) {$1+=1; $2=0} else {$2+=1}; OFS="."; print $0}')
+        run: |
+          version_parts=(${latest_tag//./ })
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          if [[ ${minor} == 9 ]]; then
+            major=$((major+1))
+            minor=0
+          else
+            minor=$((minor+1))
+          fi
+          next_version="${major}.${minor}"
+          echo ::set-output name=next_version::"${next_version}"
       
       - name: Compress Files
         run: zip UBController.zip brightness-controller.desktop brt.svg brightness-script.py
@@ -32,8 +46,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "v" to the tag name
-          release_name: "Release v${{ steps.get_next_version.outputs.next_version }}"  # Prepend "Release v" to the release name
+          tag_name: "${{ steps.get_next_version.outputs.next_version }}"  # No need to prepend "v"
+          release_name: "Release ${{ steps.get_next_version.outputs.next_version }}"  # Prepend "Release " to the release name
           draft: false
           prerelease: false
 
