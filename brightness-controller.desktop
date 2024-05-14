@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Exec=python3 /home/linux/.config/autostart/brightness-script.py
+Exec=python3 /home/[username]/.config/autostart/brightness-script.py
 Hidden=false
-Terminal=True
+Terminal=False
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
 Name=Brightness Controller
