@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main  # Main branch changes only
+    paths:
+      - 'brightness-controller.desktop'
+      - 'brt.svg'
+      - 'brightness-script.py'
 
 jobs:
   To-Zip-And-Release:
